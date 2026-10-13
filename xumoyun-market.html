@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Xumoyun Market</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f4f8;--card:#fff;--tx:#1b1b24;--mut:#6b6b7b;--pri:#7000ff;--pri2:#ede3ff;--bd:#e4e4ec}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121218;--card:#1c1c25;--tx:#f1f1f6;--mut:#9a9aaa;--pri:#9b5cff;--pri2:#2a2040;--bd:#2c2c38}}
+:root[data-theme="dark"]{--bg:#121218;--card:#1c1c25;--tx:#f1f1f6;--mut:#9a9aaa;--pri:#9b5cff;--pri2:#2a2040;--bd:#2c2c38}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--card);border-bottom:1px solid var(--bd);display:flex;gap:12px;align-items:center;padding:10px 16px}
+.logo{font-weight:800;font-size:20px;color:var(--pri);white-space:nowrap}
+.logo span{background:var(--pri);color:#fff;border-radius:8px;padding:2px 8px;margin-right:6px}
+#q{flex:1;min-width:0;border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:10px;padding:10px 14px;font-size:15px}
+.cartbtn{position:relative;background:var(--pri);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:15px;cursor:pointer}
+#cnt{position:absolute;top:-6px;right:-6px;background:#ff3b5c;color:#fff;border-radius:99px;font-size:11px;min-width:18px;height:18px;display:grid;place-items:center}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.banner{background:linear-gradient(120deg,#7000ff,#c04bff);color:#fff;border-radius:16px;padding:22px;margin-bottom:14px}
+.banner h2{margin:0 0 4px;font-size:22px}.banner p{margin:0;opacity:.9}
+.cats{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:10px}
+.chip{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:8px 14px;cursor:pointer;font-size:14px}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.p{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px}
+.pic{font-size:54px;text-align:center;background:var(--pri2);border-radius:10px;padding:14px 0}
+.p h3{margin:0;font-size:14px;font-weight:600;min-height:36px}
+.old{color:var(--mut);text-decoration:line-through;font-size:12px}
+.price{font-weight:800;font-size:16px}
+.rate{color:var(--mut);font-size:12px}
+.add{margin-top:auto;border:0;background:var(--pri2);color:var(--pri);font-weight:700;border-radius:10px;padding:9px;cursor:pointer;font-size:14px}
+.add:hover{background:var(--pri);color:#fff}
+#ov{display:none;position:fixed;inset:0;background:#0007;z-index:9}
+#ov.on{display:block}
+#dr{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--card);z-index:10;transform:translateX(100%);transition:.25s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+#dr.on{transform:none}
+.dh{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--bd);font-weight:700}
+.x{background:none;border:0;color:var(--tx);font-size:22px;cursor:pointer}
+#items{flex:1;overflow:auto;padding:8px 16px}
+.it{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--bd)}
+.it .e{font-size:30px}.it .n{flex:1;font-size:14px}.it .n b{display:block;margin-top:2px}
+.qty{display:flex;align-items:center;gap:8px}
+.qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--bd);background:var(--bg);color:var(--tx);cursor:pointer}
+.df{padding:14px 16px;border-top:1px solid var(--bd);display:flex;flex-direction:column;gap:8px}
+.df input{border:1px solid var(--bd);background:var(--bg);color:var(--tx);border-radius:10px;padding:10px;font-size:15px;width:100%}
+.tot{display:flex;justify-content:space-between;font-weight:800;font-size:17px}
+.buy{border:0;background:var(--pri);color:#fff;border-radius:12px;padding:13px;font-size:16px;font-weight:700;cursor:pointer}
+.empty{color:var(--mut);text-align:center;padding:40px 0}
+.ok{text-align:center;padding:40px 16px}.ok .big{font-size:64px}
+.err{color:#ff3b5c;font-size:13px;min-height:16px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo"><span>X</span>Xumoyun Market</div>
+  <input id="q" placeholder="Mahsulot qidirish..." oninput="render()">
+  <button class="cartbtn" onclick="openCart()">🛒 Savat<b id="cnt" style="display:none">0</b></button>
+</header>
+<main>
+  <div class="banner"><h2>Xumoyun Market 🛍️</h2><p>Tez yetkazib berish • Qulay narxlar • Muddatli to'lov</p></div>
+  <div class="cats" id="cats"></div>
+  <div class="grid" id="grid"></div>
+</main>
+<div id="ov" onclick="closeCart()"></div>
+<aside id="dr">
+  <div class="dh"><span>Savat</span><button class="x" onclick="closeCart()">×</button></div>
+  <div id="items"></div>
+  <div class="df" id="foot"></div>
+</aside>
+<script>
+const P=[
+{id:1,n:"Smartfon Galaxy A55",c:"Elektronika",e:"📱",p:3890000,o:4500000,r:4.8},
+{id:2,n:"Simsiz quloqchin",c:"Elektronika",e:"🎧",p:249000,o:340000,r:4.6},
+{id:3,n:"Noutbuk 15.6\"",c:"Elektronika",e:"💻",p:6990000,o:7800000,r:4.7},
+{id:4,n:"Aqlli soat",c:"Elektronika",e:"⌚",p:459000,o:620000,r:4.5},
+{id:5,n:"Erkaklar krossovkasi",c:"Kiyim",e:"👟",p:329000,o:450000,r:4.4},
+{id:6,n:"Ayollar ko'ylagi",c:"Kiyim",e:"👗",p:219000,o:290000,r:4.6},
+{id:7,n:"Futbolka (paxta)",c:"Kiyim",e:"👕",p:89000,o:120000,r:4.3},
+{id:8,n:"Sumka",c:"Kiyim",e:"👜",p:179000,o:240000,r:4.5},
+{id:9,n:"Choynak to'plami",c:"Uy-ro'zg'or",e:"🫖",p:135000,o:180000,r:4.7},
+{id:10,n:"Elektr choynak",c:"Uy-ro'zg'or",e:"♨️",p:189000,o:250000,r:4.6},
+{id:11,n:"Changyutgich",c:"Uy-ro'zg'or",e:"🧹",p:849000,o:990000,r:4.5},
+{id:12,n:"Yostiq 2 dona",c:"Uy-ro'zg'or",e:"🛏️",p:149000,o:199000,r:4.4},
+{id:13,n:"Bolalar konstruktori",c:"Bolalar",e:"🧩",p:119000,o:160000,r:4.8},
+{id:14,n:"Yumshoq ayiq",c:"Bolalar",e:"🧸",p:99000,o:140000,r:4.7},
+{id:15,n:"Sifat kremi",c:"Go'zallik",e:"🧴",p:79000,o:110000,r:4.4},
+{id:16,n:"Atir",c:"Go'zallik",e:"🌸",p:259000,o:340000,r:4.6}
+];
+const cats=["Hammasi",...new Set(P.map(x=>x.c))];
+let cat="Hammasi",cart={},done=null;
+try{cart=JSON.parse(localStorage.getItem("xm_cart")||"{}")}catch(e){}
+const f=n=>n.toLocaleString("ru-RU")+" so'm";
+function save(){try{localStorage.setItem("xm_cart",JSON.stringify(cart))}catch(e){}}
+function render(){
+  document.getElementById("cats").innerHTML=cats.map(c=>`<button class="chip ${c==cat?"on":""}" onclick="cat='${c.replace(/'/g,"\\'")}';render()">${c}</button>`).join("");
+  const s=document.getElementById("q").value.toLowerCase().trim();
+  const L=P.filter(x=>(cat=="Hammasi"||x.c==cat)&&x.n.toLowerCase().includes(s));
+  document.getElementById("grid").innerHTML=L.length?L.map(x=>`<div class="p"><div class="pic">${x.e}</div><h3>${x.n}</h3><div class="rate">⭐ ${x.r}</div><div><div class="old">${f(x.o)}</div><div class="price">${f(x.p)}</div></div><button class="add" onclick="add(${x.id})">Savatga</button></div>`).join(""):`<div class="empty">Hech narsa topilmadi</div>`;
+  const c=Object.values(cart).reduce((a,b)=>a+b,0),b=document.getElementById("cnt");
+  b.style.display=c?"grid":"none";b.textContent=c;
+}
+function add(id){cart[id]=(cart[id]||0)+1;save();render();}
+function chg(id,d){cart[id]=(cart[id]||0)+d;if(cart[id]<=0)delete cart[id];save();render();drawCart();}
+function total(){return Object.entries(cart).reduce((s,[id,q])=>s+P.find(x=>x.id==id).p*q,0)}
+function drawCart(){
+  const it=document.getElementById("items"),ft=document.getElementById("foot");
+  if(done){it.innerHTML=`<div class="ok"><div class="big">✅</div><h2>Buyurtma qabul qilindi!</h2><p>Buyurtma raqami: <b>#${done.no}</b></p><p>${done.name}, tez orada ${done.phone} raqamingizga qo'ng'iroq qilamiz.</p></div>`;ft.innerHTML=`<button class="buy" onclick="done=null;closeCart()">Xaridni davom ettirish</button>`;return;}
+  const ids=Object.keys(cart);
+  if(!ids.length){it.innerHTML=`<div class="empty">Savat bo'sh 🛒</div>`;ft.innerHTML="";return;}
+  it.innerHTML=ids.map(id=>{const x=P.find(y=>y.id==id);return `<div class="it"><div class="e">${x.e}</div><div class="n">${x.n}<b>${f(x.p*cart[id])}</b></div><div class="qty"><button onclick="chg(${id},-1)">−</button>${cart[id]}<button onclick="chg(${id},1)">+</button></div></div>`}).join("");
+  ft.innerHTML=`<div class="tot"><span>Jami:</span><span>${f(total())}</span></div><input id="nm" placeholder="Ismingiz"><input id="ph" type="tel" placeholder="Telefon: +998 90 123 45 67"><input id="ad" placeholder="Yetkazib berish manzili"><div class="err" id="er"></div><button class="buy" onclick="order()">Buyurtma berish</button>`;
+}
+function order(){
+  const name=nm.value.trim(),phone=ph.value.trim(),addr=ad.value.trim();
+  if(!name||phone.replace(/\D/g,"").length<9||!addr){er.textContent="Ism, telefon va manzilni to'g'ri kiriting";return;}
+  done={no:Math.floor(100000+Math.random()*900000),name,phone};
+  cart={};save();render();drawCart();
+}
+function openCart(){drawCart();dr.classList.add("on");ov.classList.add("on")}
+function closeCart(){dr.classList.remove("on");ov.classList.remove("on");if(done){done=null}}
+render();
+</script>
+</body>
+</html>
